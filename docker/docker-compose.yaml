@@ -1,0 +1,30 @@
+services:
+  db:
+    image: mysql
+    container_name: mysql
+    restart: always
+    expose:
+      - '3307'
+    environment:
+      MYSQL_ROOT_PASSWORD: '123456'
+      MYSQL_TCP_PORT: 3307
+    ports:
+      - '3307:3307'
+    networks:
+      - my-network
+    volumes:
+      - ./data.sql:/docker-entrypoint-initdb.d/data.sql
+  api:
+    environment:
+      DB_HOST: 'mysql'
+    build: ..  # Build the image from the Dockerfile in the parent directory
+    expose:
+      - '8080'
+    ports:
+      - '8080:8080' # Expose the API service on port 8080
+    depends_on:
+      - db  # Ensure the database starts before the API service
+    networks:
+      - my-network
+networks:
+  my-network:  # Define the custom network
