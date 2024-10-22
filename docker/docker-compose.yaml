@@ -1,6 +1,7 @@
 services:
   db:
     image: mysql
+    container_name: db
     restart: always
     expose:
       - '3307'
