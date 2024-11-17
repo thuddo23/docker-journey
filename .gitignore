@@ -44,3 +44,4 @@ bin/
 ### Mac OS ###
 .DS_Store
 docker/redash/simple/postgresql-data
+docker/redash/different_network/postgresql-data
