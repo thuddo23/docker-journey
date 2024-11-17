@@ -69,6 +69,8 @@ services:
   #
   redis:
     image: redis:5.0-alpine
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
     restart: always
     networks:
       - redis_network
@@ -82,13 +84,15 @@ services:
   postgres:
     image: postgres:9.6-alpine
     env_file: .env
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     volumes:
       - ./postgresql-data:/var/lib/postgresql/data
     restart: always
     networks:
-      - redash_network
+      - postgres_network
 
 networks:
   redash_network:
   redis_network:
-#  postgres_network:
+  postgres_network:
