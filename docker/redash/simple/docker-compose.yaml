@@ -1,12 +1,15 @@
+x-redash-service: &redash-service
+  image: redash/redash:latest
+  depends_on:
+    - postgres
+    - redis
+
 services:
   #
   # This section shows the services that would run on-prem
   #
   redash:
-    image: redash/redash:latest
-    depends_on:
-      - postgres
-      - redis
+    <<: *redash-service
     env_file: .env
     restart: always
     command: server
@@ -15,10 +18,7 @@ services:
     environment:
       REDASH_WEB_WORKERS: 4
   scheduler:
-    image: redash/redash:latest
-    depends_on:
-      - postgres
-      - redis
+    <<: *redash-service
     env_file: .env
     restart: always
     command: scheduler
@@ -26,10 +26,7 @@ services:
       QUEUES: "celery"
       WORKERS_COUNT: 1
   scheduled_worker:
-    image: redash/redash:latest
-    depends_on:
-      - postgres
-      - redis
+    <<: *redash-service
     env_file: .env
     restart: always
     command: worker
@@ -37,10 +34,7 @@ services:
       QUEUES: "scheduled_queries,schemas"
       WORKERS_COUNT: 1
   adhoc_worker:
-    image: redash/redash:latest
-    depends_on:
-      - postgres
-      - redis
+    <<: *redash-service
     env_file: .env
     restart: always
     command: worker
