@@ -1,0 +1,6 @@
+services:
+  redis:
+    image: redis:5.0-alpine
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    restart: always

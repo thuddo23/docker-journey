@@ -1,0 +1,9 @@
+services:
+  postgres:
+    image: postgres:9.6-alpine
+    env_file: .env
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    volumes:
+      - ./postgresql-data:/var/lib/postgresql/data
+    restart: always
