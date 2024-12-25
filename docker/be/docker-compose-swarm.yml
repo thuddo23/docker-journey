@@ -1,0 +1,58 @@
+services:
+  db:
+    image: mysql:latest
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: DOCKER_JOURNEY_APP
+    ports:
+      - "3306:3306" # Expose MySQL on port 3306
+    configs:
+      - source: data-sql
+        target: /docker-entrypoint-initdb.d/data.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+      restart_policy:
+        condition: on-failure
+
+  api:
+    image: thuandd23/be-api-demo
+    container_name: api
+    environment:
+      DB_HOST: db # The db service hostname in Docker Swarm
+      DB_PORT: 3306 # Internal MySQL port
+      DB_NAME: DOCKER_JOURNEY_APP
+      DB_USER: root
+      DB_PASSWORD: 123456
+    ports:
+      - "8080:8080" # Expose API on port 8080
+    depends_on:
+      - db
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+      restart_policy:
+        condition: on-failure
+
+configs:
+  data-sql:
+    external: true
